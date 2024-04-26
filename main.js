@@ -77,12 +77,13 @@ const cubeSize = 0.8;
 const neuronSpacing = 1, tokenSpacing = 1.5, layerSpacing = 2;
 
 
-const tokenLabels = Array.from({ length: tokens }, (_, index) => `token ${index}`);
+//const tokenLabels = Array.from({ length: tokens }, (_, index) => `token ${index}`);
+const tokenLabels = Array.from(["This", "movie", "   is", " the", " best", "   !"]);
 
 const neuronLabels = Array.from({ length: neurons }, (_, index) => `N${index}`);
 
 const layerLabels = Array.from({ length: layers }, (_, index) => `L${index}`);
-
+ 
 
 function createTextSprite(message, parameters) {
 	if (parameters === undefined) parameters = {};
@@ -290,7 +291,7 @@ let cubeOffset = new THREE.Vector3(
 function calculateCubePosition(i, j, k) {
     const x = (j + cubeOffset.x) * neuronSpacing;
     const y = (i + cubeOffset.y) * layerSpacing;
-    const z = - (k + cubeOffset.z) * tokenSpacing;
+    const z = (k + cubeOffset.z) * tokenSpacing;
 
     return new THREE.Vector3(x, y, z);
 }
@@ -306,12 +307,12 @@ function calculateSpritePosition(cubePosition, spriteOffset) {
 
 let layerSpriteOffset = new THREE.Vector3(-1.5, 0.25, -2);
 let neuronSpriteOffset = new THREE.Vector3(-0.25, -1, 1.5);
-let tokenSpriteOffset = new THREE.Vector3(-2.25, -1, -0.25);
+let tokenSpriteOffset = new THREE.Vector3(-2.25, -1, -0.5);
 
 
 for (let i = 0; i < layers; i++) {
 	let j = 0;
-	let k = tokens - 1;
+	let k = 0;
 	const sprite = createTextSprite(layerLabels[i]);
 	sprite.position.copy(calculateSpritePosition(calculateCubePosition(i, j, k), layerSpriteOffset));
 	sprite.material.opacity = 0;
@@ -320,7 +321,7 @@ for (let i = 0; i < layers; i++) {
 }
 for (let j = 0; j < neurons; j++) {
 	let i = 0;
-	let k = 0;
+	let k = tokens - 1;
 	const sprite = createTextSprite(neuronLabels[j]);
 	sprite.position.copy(calculateSpritePosition(calculateCubePosition(i, j, k), neuronSpriteOffset));
 	sprite.material.opacity = 0;
@@ -347,8 +348,8 @@ function updateSpriteOpacity(sprites, fraction) {
 function startRotating() {
     controls.autoRotate = true; 
     controls.autoRotateSpeed = 0; 
-    const duration = 2000; 
-    const maxRotateSpeed = 1; 
+    const duration = 3000; 
+    const maxRotateSpeed = 0.5; 
     const startTime = Date.now();
 
     function increaseRotationSpeed() {
@@ -376,7 +377,7 @@ function startAnimation() {
 			neuron.forEach((cube, k) => {
 				const endPosition = calculateCubePosition(i, j, k);
 				const startPosition = cube.position.clone();
-
+				
 				// Animate the position
 				const animatePosition = () => {
 					const elapsedTime = Date.now() - startTime;
