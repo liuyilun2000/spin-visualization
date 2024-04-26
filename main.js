@@ -1,72 +1,12 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'OrbitControls';
 import { FontLoader } from 'FontLoader';
 import { TextGeometry } from 'TextGeometry';
-import { EffectComposer } from 'EffectComposer';
-import { RenderPass } from 'RenderPass';
-import { UnrealBloomPass } from 'UnrealBloomPass';
-import { BokehPass } from 'BokehPass';
+
+import * as Utils from './utils.js';
+import {scene, composer, controls, updateBloomEffect, onWindowResize} from './env.js';
 
 
-const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
-
-
-// Define the parameters for the orthographic camera
-const frustumSize = 36; // This value might need adjustment based on your scene's scale
-const aspect = window.innerWidth / window.innerHeight;
-const frustumHalfHeight = frustumSize / 2;
-const frustumHalfWidth = frustumHalfHeight * aspect;
-
-
-const scene = new THREE.Scene();
-const camera = new THREE.OrthographicCamera(
-	-frustumHalfWidth,    // Left
-	frustumHalfWidth,     // Right
-	frustumHalfHeight,    // Top
-	-frustumHalfHeight,   // Bottom
-	0.5,                    // Near plane
-	1500                  // Far plane
-);
-
-const composer = new EffectComposer(renderer);
-const renderPass = new RenderPass(scene, camera);
-
-const bloomPass = new UnrealBloomPass(
-	new THREE.Vector2(window.innerWidth, window.innerHeight),
-	0.5, 	//strength
-	0.8, 	//radius
-	0		//threshold
-);
-
-composer.addPass(renderPass);
-composer.addPass(bloomPass);
-
-
-
-/*
-const bokehPass = new BokehPass(scene, camera, {
-    focus: 1,
-    aperture: 0.0005,
-    maxblur: 0.8,
-    width: window.innerWidth,
-    height: window.innerHeight
-});
-
-composer.addPass(bokehPass);
-*/
-
-
-
-
-// OrbitControls for interactive manipulation
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.5;
-controls.autoRotate = false;  
-controls.autoRotateSpeed = 0.0; 
+window.addEventListener('resize', onWindowResize, false);
 
 
 
@@ -114,19 +54,6 @@ function createTextSprite(message, parameters) {
 	return sprite;
 }
 
-function activationColor(activation) {
-	//let c1 = new THREE.Color('rgba(200,20,40,0.2)')
-	//let c2 = new THREE.Color('rgba(20,200,40,1)') 
-	let color = new THREE.Color().setHSL(activation * 0.4, 0.4, 0.4);
-	//let color = new THREE.Color().lerpColors(c1, c2, activation);
-	return color;
-}
-
-function activationOpacity(activation) {
-	let opacity = 0.02 + activation ** 6
-	return opacity
-}
-
 const activationData = Array.from({ length: layers }, () =>
 	Array.from({ length: neurons }, () =>
 		Array.from({ length: tokens }, () => Math.random())
@@ -148,16 +75,8 @@ maxPoolingData.forEach(neuronValues => {
 });
 
 
-/*
-const avgPoolingData = activationData.map(layer =>
-	layer.map(neuron => neuron.reduce((a, b) => a + b, 0) / neuron.length)
-);
-*/
-
-
 
 const cubes = [];
-
 
 const maxCubes = [];
 const nonMaxCubes = [];
@@ -179,19 +98,18 @@ for (let i = 0; i < layers; i++) {
 		for (let k = 0; k < tokens; k++) {
 			const geometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize); // Cube geometry
 			const activation = activationData[i][j][k];
-			const color = activationColor(activation);
 			const material = new THREE.MeshBasicMaterial({
-				color: color,
+				color: Utils.activationColor(activation),
 				transparent: true,
-				opacity: activationOpacity(activation)
+				opacity: Utils.activationOpacity(activation)
 			});
 			const cube = new THREE.Mesh(geometry, material);
 
 			// Set initial random positions far from the center
 			cubePositions[i][j][k] = new THREE.Vector3(
-				(Math.random() + 5) * frustumSize * 2,
-				(Math.random() - 5.5) * frustumSize * 2,
-				(Math.random() - 6) * frustumSize * 2
+				(Math.random() + 5) * 50,
+				(Math.random() - 5.5) * 50,
+				(Math.random() - 6) * 50
 			);
 
 			// Set initial random velocities
@@ -237,21 +155,9 @@ function driftCubes() {
 	}
 }
 
-// Set camera position
-camera.position.set(-20, 20, 20);
 
 
 
-let bloomCycle = 0;
-let maxBloomStrength = 0.64;
-let minBloomStrength = 0.56;
-let bloomSpeed = 0.01;
-
-function updateBloomEffect() {
-    bloomCycle += bloomSpeed;
-    const bloomStrength = minBloomStrength + (Math.sin(bloomCycle) + 1) / 2 * (maxBloomStrength - minBloomStrength);
-    bloomPass.strength = bloomStrength;
-}
 
 
 // Animation function
@@ -267,15 +173,6 @@ function animate() {
 	composer.render();
 }
 
-function easeInCubic(t) {
-    return t * t * t;
-}
-function easeOutCubic(t) {
-    return (--t) * t * t + 1;
-}
-function easeInOutCubic(t) {
-    return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-}
 
 const tokenSprites = [];
 const neuronSprites = [];
@@ -355,7 +252,7 @@ function startRotating() {
     function increaseRotationSpeed() {
         const elapsedTime = Date.now() - startTime;
         const fraction = Math.min(elapsedTime / duration, 1); 
-        controls.autoRotateSpeed = maxRotateSpeed * easeInCubic(fraction); 
+        controls.autoRotateSpeed = maxRotateSpeed * Utils.easeInCubic(fraction); 
 
         if (fraction < 1) {
             requestAnimationFrame(increaseRotationSpeed);
@@ -382,7 +279,7 @@ function startAnimation() {
 				const animatePosition = () => {
 					const elapsedTime = Date.now() - startTime;
 					let fraction = elapsedTime / duration;
-					fraction = easeInOutCubic(fraction);
+					fraction = Utils.easeInOutCubic(fraction);
 
 					if (fraction < 1) {
 						const currentPosition = startPosition.clone().lerp(endPosition, fraction);
@@ -424,8 +321,8 @@ function startPoolingAnimation(animationType) {
 				const initialActivation = entry.activation;
 				const targetActivation = (initialActivation - max_min) / (max_max - max_min);
 				const currentActivation = initialActivation + (targetActivation - initialActivation) * fraction;
-				cube.material.color = activationColor(currentActivation);
-				cube.material.opacity = activationOpacity(currentActivation);
+				cube.material.color = Utils.activationColor(currentActivation);
+				cube.material.opacity = Utils.activationOpacity(currentActivation);
 			});
 
 			nonMaxCubes.forEach(entry => {
@@ -433,8 +330,8 @@ function startPoolingAnimation(animationType) {
 				const initialActivation = entry.activation;
 				const targetActivation = 0;
 				const currentActivation = initialActivation + (targetActivation - initialActivation) * fraction;
-				cube.material.color = activationColor(currentActivation);
-				cube.material.opacity = activationOpacity(currentActivation);
+				cube.material.color = Utils.activationColor(currentActivation);
+				cube.material.opacity = Utils.activationOpacity(currentActivation);
 				if (fraction === 1) {
 					scene.remove(cube); 
 				}
@@ -453,7 +350,7 @@ function startPoolingAnimation(animationType) {
             // Second stage: Move maxCubes to z=0
             const moveElapsedTime = Date.now() - moveStartTime;
             let moveFraction = Math.min(moveElapsedTime / moveDuration, 1);
-            moveFraction = easeInOutCubic(moveFraction); // Apply ease-out effect
+            moveFraction = Utils.easeInOutCubic(moveFraction); // Apply ease-out effect
 
             maxCubes.forEach(entry => {
                 const cube = entry.cube;
@@ -506,24 +403,3 @@ document.getElementById('startPooling').addEventListener('click', () => {
 
 
 animate();
-
-
-
-window.addEventListener('resize', onWindowResize, false);
-
-function onWindowResize() {
-	const aspect = window.innerWidth / window.innerHeight;
-	const frustumHalfHeight = frustumSize / 2;
-	const frustumHalfWidth = frustumHalfHeight * aspect;
-
-	camera.left = -frustumHalfWidth;
-	camera.right = frustumHalfWidth;
-	camera.top = frustumHalfHeight;
-	camera.bottom = -frustumHalfHeight;
-	
-    camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
-	
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    composer.setSize(window.innerWidth, window.innerHeight);
-}
