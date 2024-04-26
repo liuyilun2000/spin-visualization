@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://unpkg.com/three@0.138.0/build/three.module.js",
+					"FontLoader": "https://unpkg.com/three@0.138.0/examples/jsm/loaders/FontLoader.js",
+					"TextGeometry": "https://unpkg.com/three@0.138.0/examples/jsm/geometries/TextGeometry.js",
+					"OrbitControls": "https://unpkg.com/three@0.138.0/examples/jsm/controls/OrbitControls.js",
+					"EffectComposer": "https://unpkg.com/three@0.138.0/examples/jsm/postprocessing/EffectComposer.js",
+					"RenderPass": "https://unpkg.com/three@0.138.0/examples/jsm/postprocessing/RenderPass.js", 
+					"UnrealBloomPass": "https://unpkg.com/three@0.138.0/examples/jsm/postprocessing/UnrealBloomPass.js",
+					"BokehPass": "https://unpkg.com/three@0.138.0/examples/jsm/postprocessing/BokehPass.js"
+				}
+			}
+		</script>
+
+		<style>
+			html, body {
+				height: 100%;
+				margin: 0;
+			}
+			canvas {
+				display: block; /* Eliminates the margin around the canvas */
+				background: #000; /* Optional: Sets a background color for the canvas */
+				position: fixed; /* Positions the canvas */
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				z-index: 0; /* Places the canvas behind other content */
+			}
+			#startAnimation {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				z-index: 10; /* Ensures the button is above the canvas */
+			}
+		</style>
+	</head>
+
+	<body>
+		<button id="startAnimation" style="position: absolute; top: 10px; right: 10px;">Start Animation</button>
+		<button id="startPooling" style="position: absolute; top: 40px; right: 10px; z-index: 10;">Start Pooling</button>
+
+
+		<script type="module" src="main.js"></script>
+	</body>
+
+</html>
