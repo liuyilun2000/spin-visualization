@@ -25,3 +25,4 @@ export function activationOpacity(activation) {
 	let opacity = 0.02 + activation ** 6
 	return opacity
 }
+
