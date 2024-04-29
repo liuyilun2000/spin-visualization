@@ -1,6 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<meta charset="UTF-8">
+		<title>SPIN</title>
+		<!-- favicon -->
+		<link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+		<link rel="manifest" href="assets/favicon/site.webmanifest">
+
+		<!-- google font -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+		
+		<link rel="stylesheet" href="styles/styles.css">
+
 		<script type="importmap">
 			{
 				"imports": {
@@ -14,36 +29,35 @@
 			}
 		</script>
 
-		<style>
-			html, body {
-				height: 100%;
-				margin: 0;
-			}
-			canvas {
-				display: block; /* Eliminates the margin around the canvas */
-				background: #000; /* Optional: Sets a background color for the canvas */
-				position: fixed; /* Positions the canvas */
-				top: 0;
-				left: 0;
-				width: 100%;
-				height: 100%;
-				z-index: 0; /* Places the canvas behind other content */
-			}
-			#startAnimation {
-				position: absolute;
-				top: 10px;
-				right: 10px;
-				z-index: 10; /* Ensures the button is above the canvas */
-			}
-		</style>
 	</head>
 
 	<body>
-		<button id="startAnimation" style="position: absolute; top: 10px; right: 10px;">Start Animation</button>
-		<button id="startPooling" style="position: absolute; top: 40px; right: 10px; z-index: 10;">Start Pooling</button>
+		
+		<div id="intro" class="roboto-condensed">
+			<h1>
+				Exploring SPIN
+			</h1>
+			<h2>
+				Sparsifying and Integrating Internal Neurons in Large Language Models for Text Classification
+			</h2>
+			<div>
+				<a href="https://github.com/difanj0713/Sparsify-then-Classify/tree/main" target="_blank">
+					<object type="image/svg+xml" data="https://img.shields.io/badge/GitHub-Repo-blue.svg?logo=github">
+						GitHub Repo
+					</object>
+				</a>&nbsp;
+				<a href="https://arxiv.org/abs/2311.15983" target="_blank">
+					<object type="image/svg+xml" data="https://img.shields.io/badge/arXiv-2311.15983-b31b1b.svg?logo=arxiv">
+						arXiv 2311.15983
+					</object>
+				</a>
+			</div>
+		</div>
+		<button id="startAnimation">Start Animation</button>
+		<button id="startPooling">Start Pooling</button>
 
 
-		<script type="module" src="main.js"></script>
+		<script type="module" src="src/main.js"></script>
 	</body>
 
 </html>

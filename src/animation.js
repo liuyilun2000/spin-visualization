@@ -1,129 +1,26 @@
-import * as THREE from 'three';
-
 import * as Utils from './utils.js';
-import {scene, composer, controls, updateBloomEffect, onWindowResize} from './env.js';
-import * as Sprite from './sprite.js';
-import * as Config from './config.js';
 import * as Data from './data.js';
+import {scene, composer, controls, updateBloomEffect} from './env.js';
+import * as Cube from './cube.js';
+import * as Sprite from './sprite.js';
 
-window.addEventListener('resize', onWindowResize, false);
+// Animation function
+export function animate() {
+	requestAnimationFrame(animate);
+	// Drift cubes if drifting is true
+	if (isDrifting) Cube.driftCubes();
+	updateBloomEffect();
+	controls.update();
+	composer.render();
+};
 
 
-
-const cubes = [];
-
-const maxCubes = [];
-const nonMaxCubes = [];
-
-const cubePositions = [];
-const cubeVelocities = [];
-
-
-// Create blocks with random positions
-for (let i = 0; i < Config.dimensions.layer; i++) {
-	cubes[i] = [];
-	cubePositions[i] = [];
-	cubeVelocities[i] = [];
-	for (let j = 0; j < Config.dimensions.neuron; j++) {
-		cubes[i][j] = [];
-		cubePositions[i][j] = [];
-		cubeVelocities[i][j] = [];
-		for (let k = 0; k < Config.dimensions.token; k++) {
-			const geometry = new THREE.BoxGeometry(Config.cubeSize, Config.cubeSize, Config.cubeSize); // Cube geometry
-			const activation = Data.activation[i][j][k];
-			const material = new THREE.MeshBasicMaterial({
-				color: Utils.activationColor(activation),
-				transparent: true,
-				opacity: Utils.activationOpacity(activation)
-			});
-			const cube = new THREE.Mesh(geometry, material);
-
-			// Set initial random positions far from the center
-			cubePositions[i][j][k] = new THREE.Vector3(
-				(Math.random() + 5) * 50,
-				(Math.random() - 5.5) * 50,
-				(Math.random() - 6) * 50
-			);
-
-			// Set initial random velocities
-			cubeVelocities[i][j][k] = new THREE.Vector3(
-				(Math.random() - 0.5) * 0.02,
-				(Math.random() - 0.5) * 0.02,
-				(Math.random() - 0.5) * 0.02
-			);
-
-			cube.position.copy(cubePositions[i][j][k]);
-
-			scene.add(cube);
-			cubes[i][j][k] = cube;
-
-            if (activation === Data.maxPoolingActivation[i][j]) {
-                maxCubes.push({ 
-					cube: cube, 
-					activation: activation,
-					i: i, j: j, k: k
-				 });
-            } else {
-                nonMaxCubes.push({ 
-					cube: cube, 
-					activation: activation,
-					i: i, j: j, k: k
-				});
-            }
-		}
-	}
-}
 
 
 
 let isDrifting = true;
 
-function driftCubes() {
-	if (!isDrifting) return;
-	for (let i = 0; i < Config.dimensions.layer; i++) {
-		for (let j = 0; j < Config.dimensions.neuron; j++) {
-			for (let k = 0; k < Config.dimensions.token; k++) {
-				// Update positions based on velocities
-				cubePositions[i][j][k].add(cubeVelocities[i][j][k]);
-				cubes[i][j][k].position.copy(cubePositions[i][j][k]);
-			}
-		}
-	}
-}
-
-
-
-
-
-
-// Animation function
-function animate() {
-	requestAnimationFrame(animate);
-	// Drift cubes if drifting is true
-	if (isDrifting) driftCubes();
-	updateBloomEffect();
-	controls.update();
-	composer.render();
-}
-
-
-
-let cubeOffset = new THREE.Vector3(
-	Config.dimensions.neuron * -0.5, 
-	Config.dimensions.layer * -0.4, 
-	Config.dimensions.token * -0.5
-);
-
-function calculateCubePosition(i, j, k) {
-    const x = (j + cubeOffset.x) * Config.spacing.neuron;
-    const y = (i + cubeOffset.y) * Config.spacing.layer;
-    const z = (k + cubeOffset.z) * Config.spacing.token;
-
-    return new THREE.Vector3(x, y, z);
-}
-
-
-function startRotating() {
+export function startRotating() {
     controls.autoRotate = true; 
     controls.autoRotateSpeed = 0; 
     const duration = 3000; 
@@ -139,19 +36,19 @@ function startRotating() {
     }
 
     increaseRotationSpeed(); 
-}
+};
 
 
-function startAnimation() {
+export function startAnimation() {
 	isDrifting = false; 
 	startRotating();
 	const startTime = Date.now();
 	const duration = 2000; // Duration to move cubes to position
 
-	cubes.forEach((layer, i) => {
+	Cube.cubes.forEach((layer, i) => {
 		layer.forEach((neuron, j) => {
 			neuron.forEach((cube, k) => {
-				const endPosition = calculateCubePosition(i, j, k);
+				const endPosition = Cube.calculateCubePosition(i, j, k);
 				const startPosition = cube.position.clone();
 				
 				// Animate the position
@@ -179,10 +76,10 @@ function startAnimation() {
 			});
 		});
 	});
-}
+};
 
 
-function startPoolingAnimation(animationType) {
+export function startPoolingAnimation(animationType) {
 	isDrifting = false; 
 	const startTime = Date.now();
     const duration = 2000; // milliseconds for first transition (fade out)
@@ -195,29 +92,29 @@ function startPoolingAnimation(animationType) {
 		const fraction = Math.min(elapsedTime / duration, 1); // Clamp to 1
 
 		if (stage === 1) {
-			maxCubes.forEach(entry => {
+			Cube.maxCubes.forEach(entry => {
 				const cube = entry.cube;
 				const initialActivation = entry.activation;
 				const targetActivation = (initialActivation - Data.maxPoolingActivation_min) / (Data.maxPoolingActivation_max - Data.maxPoolingActivation_min);
 				const currentActivation = initialActivation + (targetActivation - initialActivation) * fraction;
-				cube.material.color = Utils.activationColor(currentActivation);
-				cube.material.opacity = Utils.activationOpacity(currentActivation);
+				cube.material.color = Cube.activationColor(currentActivation);
+				cube.material.opacity = Cube.activationOpacity(currentActivation);
 			});
 
-			nonMaxCubes.forEach(entry => {
+			Cube.nonMaxCubes.forEach(entry => {
 				const cube = entry.cube;
 				const initialActivation = entry.activation;
 				const targetActivation = 0;
 				const currentActivation = initialActivation + (targetActivation - initialActivation) * fraction;
-				cube.material.color = Utils.activationColor(currentActivation);
-				cube.material.opacity = Utils.activationOpacity(currentActivation);
+				cube.material.color = Cube.activationColor(currentActivation);
+				cube.material.opacity = Cube.activationOpacity(currentActivation);
 				if (fraction === 1) {
 					scene.remove(cube); 
 				}
 			});
 
 			if (fraction === 1) {
-                if (nonMaxCubes.length > 0) nonMaxCubes.length = 0; 
+                if (Cube.nonMaxCubes.length > 0) Cube.nonMaxCubes.length = 0; 
 				stage = 2; // Move to next stage
                 moveStartTime = Date.now(); // Record start time for move animation
             }
@@ -229,7 +126,7 @@ function startPoolingAnimation(animationType) {
             let moveFraction = Math.min(moveElapsedTime / moveDuration, 1);
             moveFraction = Utils.easeInOutCubic(moveFraction); // Apply ease-out effect
 
-            maxCubes.forEach(entry => {
+            Cube.maxCubes.forEach(entry => {
                 const cube = entry.cube;
                 const zTarget = 0;
                 const zStart = cube.position.z;
@@ -266,17 +163,4 @@ function startPoolingAnimation(animationType) {
 	}
 
 	update();
-}
-
-
-
-
-// Event listener for the button
-document.getElementById('startAnimation').addEventListener('click', startAnimation);
-
-document.getElementById('startPooling').addEventListener('click', () => {
-	startPoolingAnimation('max'); // Or 'avg' for average pooling
-});
-
-
-animate();
+};

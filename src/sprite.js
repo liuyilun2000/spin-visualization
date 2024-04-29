@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { scene } from './env.js';
 import * as Config from './config.js';
-import * as Cube from './cube.js';
+import { calculateCubePosition } from './cube.js';
 
 
 function createTextSprite(message, parameters) {
@@ -34,10 +34,6 @@ function createTextSprite(message, parameters) {
 }
 
 
-const tokenSprites = [];
-const neuronSprites = [];
-const layerSprites = [];
-
 
 function calculateSpritePosition(cubePosition, spriteOffset) {
     const x = cubePosition.x + spriteOffset.x;
@@ -48,13 +44,17 @@ function calculateSpritePosition(cubePosition, spriteOffset) {
 }
 
 
+const tokenSprites = [];
+const neuronSprites = [];
+const layerSprites = [];
+
 for (let i = 0; i < Config.dimensions.layer; i++) {
 	let j = 0;
 	let k = 0;
 	const sprite = createTextSprite(Config.labels.layer[i]);
 	sprite.position.copy(
         calculateSpritePosition(
-            Cube.calculateCubePosition(i, j, k), 
+            calculateCubePosition(i, j, k), 
             Config.spriteOffset.layer
         )
     );
@@ -68,7 +68,7 @@ for (let j = 0; j < Config.dimensions.neuron; j++) {
 	const sprite = createTextSprite(Config.labels.neuron[j]);
 	sprite.position.copy(
         calculateSpritePosition(
-            Cube.calculateCubePosition(i, j, k), 
+            calculateCubePosition(i, j, k), 
             Config.spriteOffset.neuron
         )
     );
@@ -82,7 +82,7 @@ for (let k = 0; k < Config.dimensions.token; k++) {
 	const sprite = createTextSprite(Config.labels.token[k]);
 	sprite.position.copy(
         calculateSpritePosition(
-            Cube.calculateCubePosition(i, j, k), 
+            calculateCubePosition(i, j, k), 
             Config.spriteOffset.token
         )
     );
@@ -91,8 +91,8 @@ for (let k = 0; k < Config.dimensions.token; k++) {
 	tokenSprites.push(sprite);
 }
 
-export {tokenSprites, neuronSprites, layerSprites};
 
+export {tokenSprites, neuronSprites, layerSprites};
 
 
 export function updateSpriteOpacity(sprites, fraction) {
