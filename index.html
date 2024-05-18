@@ -36,6 +36,7 @@
 <body>
 
 	<div id="intro" class="roboto-condensed">
+		<button id="startAnimation" class="transit-button">Start Animation</button>
 		<h1>
 			Exploring SPIN<span><img src="assets/favicon/android-chrome-192x192.png"></span>
 		</h1>
@@ -55,8 +56,13 @@
 			</a>
 		</div>
 	</div>
-	<button id="startAnimation">Start Animation</button>
-	<button id="startPooling">Start Pooling</button>
+	<div id="phase0" class="phase roboto-condensed hidden">
+		<h3>At the beginning...</h3>
+		<p>
+			For each given sentence, we retrieve its neuron activation patterns of FFN neurons at each layer of the transformer model.   
+		</p>
+		<button id="startPooling" class="transit-button">Start Pooling</button>
+	</div>
 
 
 	<script type="module" src="src/main.js"></script>
