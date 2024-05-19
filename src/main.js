@@ -6,32 +6,33 @@ import * as Animation from './animation.js';
 window.addEventListener('resize', onWindowResize, false);
 
 
+const intro = document.getElementById('intro');
+const phase0 = document.getElementById('phase0');
+const phase1 = document.getElementById('phase1');
+const startAnimationButton = document.getElementById('startAnimation');
+const startPoolingButton = document.getElementById('startPooling');
 
-
-document.getElementById('startAnimation').addEventListener('click', function() {
+startAnimationButton.addEventListener('click', function() {
     // Start any canvas animations you have
     Animation.startAnimation();
 
-    // Fade out the intro text
-    const intro = document.getElementById('intro');
     intro.classList.add('fade-out');
+    setTimeout(() => intro.remove(), 2000);
 
-    // Create and insert the start pooling button
-    const startPoolingButton = document.getElementById('startPooling');
-    startPoolingButton.classList.add('fade-in');
-    //startPoolingButton.classList.remove('hidden');
-
-    const phase0 = document.getElementById('phase0');
     phase0.classList.add('fade-in');
-    
-    // Remove the intro text after it fades out
-    setTimeout(() => intro.remove(), 1000);
 });
 
 
+startPoolingButton.addEventListener('click', function() {
+    // Start any canvas animations you have
+	Animation.startPoolingAnimation('max'); 
 
-document.getElementById('startPooling').addEventListener('click', () => {
-	Animation.startPoolingAnimation('max'); // Or 'avg' for average pooling
+    //phase0.classList.add('fade-out');
+    this.classList.add('fade-out');
+    setTimeout(() => this.remove(), 2000);
+
+    phase1.classList.add('fade-in');
 });
+
 
 Animation.animate();

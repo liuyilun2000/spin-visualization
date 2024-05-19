@@ -15,6 +15,9 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
 		rel="stylesheet">
+	
+	<!-- material symbols -->
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
 	<link rel="stylesheet" href="styles/styles.css">
 
@@ -34,9 +37,9 @@
 </head>
 
 <body>
-
-	<div id="intro" class="roboto-condensed">
-		<button id="startAnimation" class="transit-button">Start Animation</button>
+	<div class="gradient-overlay"></div>
+	<div id="intro" class="panel-all roboto-condensed">
+		<button id="startAnimation" class="transit-button material-symbols-outlined">play_arrow</button>
 		<h1>
 			Exploring SPIN<span><img src="assets/favicon/android-chrome-192x192.png"></span>
 		</h1>
@@ -49,19 +52,32 @@
 					GitHub Repo
 				</object>
 			</a>&nbsp;
+			<a href="https://openreview.net/forum?id=O8r3h6Oo4Q" target="_blank">
+				<object type="image/svg+xml" data="https://img.shields.io/badge/OpenReview-ACL_2024_Findings-8c1b13.svg?logo=openreview">
+					arXiv 2311.15983
+				</object>
+			</a>&nbsp;
 			<a href="https://arxiv.org/abs/2311.15983" target="_blank">
 				<object type="image/svg+xml" data="https://img.shields.io/badge/arXiv-2311.15983-b31b1b.svg?logo=arxiv">
 					arXiv 2311.15983
 				</object>
-			</a>
+			</a>&nbsp;
 		</div>
 	</div>
-	<div id="phase0" class="phase roboto-condensed hidden">
+	<div id="phase0" class="phase panel-left roboto-condensed hidden">
 		<h3>At the beginning...</h3>
 		<p>
 			For each given sentence, we retrieve its neuron activation patterns of FFN neurons at each layer of the transformer model.   
 		</p>
-		<button id="startPooling" class="transit-button">Start Pooling</button>
+		<button id="startPooling" class="transit-button material-symbols-outlined">skip_next</button>
+	</div>
+
+	<div id="phase1" class="phase panel-right roboto-condensed hidden">
+		<h3>&nbsp;&nbsp;</h3>
+		<p>
+			A max pooling is then performed across all tokens, yielding each neuron's maximum activation record for the sentence. 
+		</p>
+		<button id="none" class="transit-button">Next</button>
 	</div>
 
 
