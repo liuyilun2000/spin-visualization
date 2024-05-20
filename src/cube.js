@@ -28,8 +28,25 @@ export function calculateCubePosition(i, j, k) {
 };
 
 
+function createCube(i, j, k, color, opacity) {
+	const geometry = new THREE.BoxGeometry(Config.cubeSize, Config.cubeSize, Config.cubeSize); // Cube geometry
+	const material = new THREE.MeshBasicMaterial({
+		color: color,
+		transparent: true,
+		opacity: opacity
+	});
+	const cube = new THREE.Mesh(geometry, material);
+
+	// Set initial random positions far from the center
+	cube.position.copy(calculateCubePosition(i, j, k));
+	
+	return cube;
+}
 
 const cubes = [];
+
+const SPCubes = [];
+const INCubes = [];
 
 const maxCubes = [];
 const nonMaxCubes = [];
@@ -44,36 +61,32 @@ for (let i = 0; i < Config.dimensions.layer; i++) {
 	cubes[i] = [];
 	cubePositions[i] = [];
 	cubeVelocities[i] = [];
+	const SPCube = createCube(i, Config.dimensions.neuron/2, Config.dimensions.token, 0xaa1234, 0.64);
+	//scene.add(SPCube);
+	SPCubes[i] = SPCube;
+	const INCube = createCube(i, Config.dimensions.neuron/2, Config.dimensions.token, 0x1234aa, 0.64);
+	//scene.add(INCube);
+	INCubes[i] = INCube;
 	for (let j = 0; j < Config.dimensions.neuron; j++) {
 		cubes[i][j] = [];
 		cubePositions[i][j] = [];
 		cubeVelocities[i][j] = [];
 		for (let k = 0; k < Config.dimensions.token; k++) {
-			const geometry = new THREE.BoxGeometry(Config.cubeSize, Config.cubeSize, Config.cubeSize); // Cube geometry
 			const activation = Data.activation[i][j][k];
-			const material = new THREE.MeshBasicMaterial({
-				color: activationColor(activation),
-				transparent: true,
-				opacity: activationOpacity(activation)
-			});
-			const cube = new THREE.Mesh(geometry, material);
-
-			// Set initial random positions far from the center
-			cubePositions[i][j][k] = new THREE.Vector3(
+			const cube = createCube(i, j, k, activationColor(activation), activationOpacity(activation));
+			const cubePosition = new THREE.Vector3(
 				(Math.random() + 5) * 50,
 				(Math.random() - 5.5) * 50,
 				(Math.random() - 6) * 50
 			);
-
+			cube.position.copy(cubePosition);		
+			cubePositions[i][j][k] = cubePosition;
 			// Set initial random velocities
 			cubeVelocities[i][j][k] = new THREE.Vector3(
 				(Math.random() - 0.5) * 0.02,
 				(Math.random() - 0.5) * 0.02,
 				(Math.random() - 0.5) * 0.02
 			);
-
-			cube.position.copy(cubePositions[i][j][k]);
-
 			scene.add(cube);
 			cubes[i][j][k] = cube;
 
@@ -96,10 +109,11 @@ for (let i = 0; i < Config.dimensions.layer; i++) {
 
 export {
     cubes,
+	SPCubes,
+	INCubes,
     maxCubes,
     nonMaxCubes
 };
-
 
 export function driftCubes() {
 	for (let i = 0; i < Config.dimensions.layer; i++) {

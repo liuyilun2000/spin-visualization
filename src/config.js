@@ -32,6 +32,6 @@ export const labels = {
 
 export const spriteOffset = {
     layer: new THREE.Vector3(-1.5, 0.25, -2),
-    neuron: new THREE.Vector3(-0.25, -1, 1.5),
+    neuron: new THREE.Vector3(0, -1, 1.5),
     token: new THREE.Vector3(-2.25, -1, -0.5)
 };

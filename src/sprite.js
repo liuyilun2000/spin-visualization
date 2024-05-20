@@ -72,6 +72,7 @@ for (let j = 0; j < Config.dimensions.neuron; j++) {
             Config.spriteOffset.neuron
         )
     );
+	sprite.material.rotation = - Math.PI / 4;
 	sprite.material.opacity = 0;
 	scene.add(sprite);
 	neuronSprites.push(sprite);

@@ -1,8 +1,12 @@
+import * as THREE from 'three';
+//import { MeshLine, MeshLineMaterial} from 'three.meshline';
+
 import * as Utils from './utils.js';
 import * as Data from './data.js';
 import {scene, composer, controls, updateBloomEffect} from './env.js';
 import * as Cube from './cube.js';
 import * as Sprite from './sprite.js';
+import * as Config from './config.js';
 
 // Animation function
 export function animate() {
@@ -79,7 +83,7 @@ export function startAnimation() {
 };
 
 
-export function startPoolingAnimation(animationType) {
+export function startPoolingAnimation() {
 	isDrifting = false; 
 	const startTime = Date.now();
     const duration = 2000; // milliseconds for first transition (fade out)
@@ -163,4 +167,62 @@ export function startPoolingAnimation(animationType) {
 	}
 
 	update();
+};
+
+
+
+function getSplinePoints(numPoints, p1, p2){
+	const points = []
+	for (let i = 0; i < numPoints; i++) {
+		let fraction = i / (numPoints - 1.0);
+		const x = p2.x * Utils.easeInOutCubic(fraction) + p1.x * (1 - Utils.easeInOutCubic(fraction));
+		const y = p2.y * fraction + p1.y * (1 - fraction);
+		const z = p2.z * fraction + p1.z * (1 - fraction);
+		if (x!==x){ console.log("X error!")}
+		else if (y!==y){ console.log("Y error!")}
+		else if (z!==z){ console.log("Z error!")}
+		else {
+			const point = new THREE.Vector3(x,y,z);
+			points[i] = point;
+		}
+	}
+	return points;
+}
+
+
+function midPoint(p1, p2) {
+	const point = new THREE.Vector3(
+		(p1.x + p2.x) / 2,
+		(p1.y * 3 + p2.y) / 4,
+		(p1.z + p2.z) / 2
+	);
+	return point;
+}
+
+
+export function startSPAnimation() {
+	for (let i = 0; i < Config.dimensions.layer; i++) {
+		scene.add(Cube.SPCubes[i]);
+	}
+	Cube.maxCubes.forEach(maxCube => {
+		const cube = maxCube.cube;
+		const spCube = Cube.SPCubes[maxCube.i];
+		const arr = getSplinePoints(4, cube.position, spCube.position);
+		
+		const curve = new THREE.CatmullRomCurve3(arr);
+
+		// Create a tube geometry along the curve
+		const tubeGeometry = new THREE.TubeGeometry(curve, 16, 0.032, 4, false);
+
+		// Create a material for the tube mesh
+		const material = new THREE.MeshBasicMaterial({ 
+			color: 0xffffff,
+			transparent: true,
+			opacity: 0.32
+		});
+
+		// Create the mesh and add it to the scene
+		const tubeMesh = new THREE.Mesh(tubeGeometry, material);
+		scene.add(tubeMesh);
+	});
 };
