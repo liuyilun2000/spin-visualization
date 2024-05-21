@@ -4,6 +4,17 @@
     transition: opacity 2s ease;
 }
 
+.phase {
+    background: 
+        linear-gradient(90deg, transparent, transparent),
+        linear-gradient(90deg, #fff, #fff); /* or any other desired text color */
+    background-size: 100% 100%, 0 100%;
+    background-repeat: no-repeat;
+    background-position: 100% 100%, 0 100%;
+    color: transparent;
+    background-clip: text;
+}
+
 .fade-out {
     opacity: 0;
     transition: opacity 2s ease;
@@ -11,7 +22,10 @@
 
 .fade-in {
     opacity: 1;
+    transition: all 2s ease;
+    background-size: 0 100%, 100% 100%;
 }
+
 
 
 

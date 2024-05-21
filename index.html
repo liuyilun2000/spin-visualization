@@ -69,20 +69,20 @@
 			</a>&nbsp;
 		</div>
 	</div>
-	<div id="phase0" class="phase panel-left roboto-condensed hidden">
-		<h3>At the beginning...</h3>
-		<p>
+	<div class="panel-left roboto-condensed">
+		<h3><a class="phase phase0 hidden">At the beginning...</a></h3>
+		<p><a class="phase phase0 hidden">
 			For each given sentence, we retrieve its neuron activation patterns of FFN neurons at each layer of the transformer model.   
-		</p>
-		<button id="startPooling" class="transit-button material-symbols-outlined">skip_next</button>
+		</a></p>
+		<button id="startPooling" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
-	<div id="phase1" class="phase panel-right roboto-condensed hidden">
-		<h3>&nbsp;&nbsp;</h3>
-		<p>
+	<div class="panel-right roboto-condensed">
+		<h3><a class="phase phase1 hidden">&nbsp</a></h3>
+		<p><a class="phase phase1 hidden">
 			A max pooling is then performed across all tokens, yielding each neuron's maximum activation record for the sentence. 
-		</p>
-		<button id="startSP" class="transit-button material-symbols-outlined">skip_next</button>
+		</a></p>
+		<button id="startSP" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
 

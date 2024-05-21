@@ -12,3 +12,8 @@ export function easeInOutCubic(t) {
     return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 }
 
+
+export function easeInOutInf(t) {
+    return t < 0.5 ? 0 : 1;
+}
+
