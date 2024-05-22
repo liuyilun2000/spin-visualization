@@ -6,7 +6,7 @@ export const dimensions = {
     token: 6
 };
 
-export const cubeSize = 0.8;
+export const cubeSize = 0.64;
 
 export const spacing = {
     layer: 2,

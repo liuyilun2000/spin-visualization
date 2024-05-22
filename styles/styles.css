@@ -14,7 +14,7 @@
     padding: 0;
     margin: -4px;
     cursor: pointer;
-    transition: transform 0.2s, opacity 2s ease;
+    transition: transform 0.2s ease, opacity 2s ease;
 }
 
 .material-symbols-outlined:hover {
@@ -71,8 +71,6 @@ canvas {
 .panel-intro {
     position: absolute;
     top: 25%;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 5;
     text-align: center;
     transition: opacity 2s ease;
@@ -117,6 +115,14 @@ canvas {
     font-weight: 200;
 }
 
+#intro img {
+    transition: transform 0.2s ease;
+}
+
+#intro img:hover {
+    transform: rotateY(-180deg);
+}
+
 #intro .button-list {
     display: inline-block;
 }
@@ -124,7 +130,6 @@ canvas {
 #intro object {
     pointer-events: none;
 }
-
 
 button {
     z-index: 10;

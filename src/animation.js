@@ -282,7 +282,7 @@ export function startSparsifyAnimation() {
 		}
 		else {
 			setTimeout(() => {
-				fadeInElement(tubeMesh, 800, 0.8);
+				fadeInElement(tubeMesh, 800, 0.64);
 			}, index * 20); 
 		}
 	});

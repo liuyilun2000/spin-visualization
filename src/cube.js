@@ -14,7 +14,7 @@ export function activationColor(activation) {
 }
 
 export function activationOpacity(activation) {
-	let opacity = 0.02 + activation ** 6
+	let opacity = 0.02 + activation ** 8
 	return opacity
 }
 
