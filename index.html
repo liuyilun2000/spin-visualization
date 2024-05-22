@@ -92,6 +92,8 @@
 		<h3><a class="phase phase2 hidden">Layer-Wise Linear Probes</a></h3>
 		<p><a class="phase phase2 hidden">
 			Linear probing is applied layer-wise for identifying the salient neurons for the targeted task in each layer of the model.
+			<br><br>			
+			Specifically, the magnitude of the learned weights in the L1-regularized (Lasso) logistic regressioncan be interpreted as indicators of the relative importance or contribution of each neuron to the prediction, i.e., saliency.
 		</a></p>
 		<button id="startPhase3" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
@@ -99,7 +101,9 @@
 	<div class="panel-right roboto-condensed" style="z-index: 7;">
 		<h3><a class="phase phase3 hidden">Salient Neuron Selection</a></h3>
 		<p><a class="phase phase3 hidden">
-			Specifically, the magnitude of the learned weights in the L1-regularized (Lasso) logistic regressioncan be interpreted as indicators of the relative importance or contribution of each neu-ron to the prediction.
+			The selection of salient neurons is guided by the sparsification threshold <i>η</i>, which serves as a metric for determining the cumulative contribution of the most significant neurons. We select the largest weights until their cumulative summation reaches <i>η</i>. 
+			<br><br>
+			The internal neurons are then sparsified based on their saliency.
 		</a></p>
 		<button id="startPhase4" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>

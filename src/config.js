@@ -6,12 +6,12 @@ export const dimensions = {
     token: 6
 };
 
-export const cubeSize = 0.5;
+export const cubeSize = 0.8;
 
 export const spacing = {
     layer: 2,
-    neuron: 0.8,
-    token: 1
+    neuron: 1,
+    token: 1.2
 };
 
 

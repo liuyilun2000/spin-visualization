@@ -96,14 +96,15 @@ export function startPoolingAnimation() {
 		const fraction = Math.min(elapsedTime / duration, 1); // Clamp to 1
 
 		if (stage === 1) {
+			/*
 			Cube.maxCubes.forEach(entry => {
 				const cube = entry.cube;
 				const initialActivation = entry.activation;
-				const targetActivation = (initialActivation - Data.maxPoolingActivation_min) / (Data.maxPoolingActivation_max - Data.maxPoolingActivation_min);
+				const targetActivation = (initialActivation - Data.maxPoolingActivation_min + 0.2) / (Data.maxPoolingActivation_max - Data.maxPoolingActivation_min + 0.2);
 				const currentActivation = initialActivation + (targetActivation - initialActivation) * fraction;
 				cube.material.color = Cube.activationColor(currentActivation);
 				cube.material.opacity = Cube.activationOpacity(currentActivation);
-			});
+			});*/
 
 			Cube.nonMaxCubes.forEach(entry => {
 				const cube = entry.cube;
@@ -191,11 +192,13 @@ function getSplinePoints(numPoints, p1, p2){
 
 
 
-export function startSPAnimation() {
+const weights = []
+
+export function startProbeAnimation() {
 	for (let i = 0; i < Config.dimensions.layer; i++) {
         setTimeout(() => {
 			scene.add(Cube.SPCubes[i]);
-            fadeInCube(Cube.SPCubes[i], 400, 0.64);
+            fadeInElement(Cube.SPCubes[i], 400, 0.64);
         }, i * 20 * Config.dimensions.neuron); 
 	}
 	Cube.maxCubes.forEach((maxCube, index) => {
@@ -208,41 +211,30 @@ export function startSPAnimation() {
 		const curve = new THREE.CatmullRomCurve3(arr);
 		const tubeGeometry = new THREE.TubeGeometry(curve, 16, 0.032, 4, false);
 		const material = new THREE.MeshBasicMaterial({ 
-			color: 0xffffff,
+			color: 0xefeff4,
 			transparent: true,
 			opacity: 0
 		});
 		const tubeMesh = new THREE.Mesh(tubeGeometry, material);
 
+		weights[index] = tubeMesh;
+
         setTimeout(() => {
             scene.add(tubeMesh);
-            fadeInMesh(tubeMesh, 200, Math.random()*0.5);
+            fadeInElement(tubeMesh, 200, Math.random()*0.5);
         }, index * 20); 
 	});
 };
 
 
-function fadeInMesh(mesh, duration, opacity) {
-    const startTime = Date.now();
-    function update() {
-        const currentTime = Date.now();
-        const elapsedTime = currentTime - startTime;
-        const fraction = Math.min(elapsedTime / duration, 1); 
-        mesh.material.opacity = Utils.easeInOutCubic(fraction) * opacity;
-        if (fraction < 1) {
-            requestAnimationFrame(update);
-        }
-    }    
-    update();
-}
 
-function fadeInCube(cube, duration, opacity) {
+function fadeInElement(element, duration, opacity) {
     const startTime = Date.now();
     function update() {
         const currentTime = Date.now();
         const elapsedTime = currentTime - startTime;
         const fraction = Math.min(elapsedTime / duration, 1); 
-        cube.material.opacity = Utils.easeInOutCubic(fraction) * opacity;
+        element.material.opacity = Utils.easeInOutCubic(fraction) * opacity;
         if (fraction < 1) {
             requestAnimationFrame(update);
         }
@@ -251,16 +243,47 @@ function fadeInCube(cube, duration, opacity) {
 }
 
 
-function fadeOutCube(cube, duration, fromOpacity) {
+
+function fadeOutElement(element, duration, fromOpacity) {
     const startTime = Date.now();
     function update() {
         const currentTime = Date.now();
         const elapsedTime = currentTime - startTime;
         const fraction = Math.min(elapsedTime / duration, 1); 
-        cube.material.fromOpacity = (1 - Utils.easeInOutCubic(fraction)) * fromOpacity;
+        element.material.opacity = (1 - Utils.easeInOutCubic(fraction)) * fromOpacity;
         if (fraction < 1) {
             requestAnimationFrame(update);
         }
     }    
     update();
 }
+
+
+
+export function startSparsifyAnimation() {
+	/*
+	for (let i = 0; i < Config.dimensions.layer; i++) {
+        setTimeout(() => {
+			fadeOutElement(Cube.SPCubes[i], 400, 0.64);
+        }, i * 20 * Config.dimensions.neuron); 
+	}*/
+	Cube.maxCubes.forEach((maxCube, index) => {
+		const cube = maxCube.cube;
+		const tubeMesh = weights[index];
+		if (tubeMesh.material.opacity < 0.36) {
+			setTimeout(() => {
+				fadeOutElement(cube, 200, cube.material.opacity);
+				fadeOutElement(tubeMesh, 200, tubeMesh.material.opacity);
+			}, index * 20); 
+			setTimeout(() => {
+				scene.remove(cube);
+				scene.remove(tubeMesh);
+			}, index * 20 + 200); 
+		}
+		else {
+			setTimeout(() => {
+				fadeInElement(tubeMesh, 800, 0.8);
+			}, index * 20); 
+		}
+	});
+};

@@ -15,6 +15,7 @@ const startPhase0Button = document.getElementById('startPhase0');
 const startPhase1Button = document.getElementById('startPhase1');
 const startPhase2Button = document.getElementById('startPhase2');
 const startPhase3Button = document.getElementById('startPhase3');
+const startPhase4Button = document.getElementById('startPhase4');
 
 
 function delayedRemove(element, delay) {
@@ -42,7 +43,6 @@ startPhase0Button.addEventListener('click', function() {
 startPhase1Button.addEventListener('click', function() {
 	Animation.startPoolingAnimation(); 
 
-    //phase0.classList.add('fade-out');
     this.classList.add('fade-out');
 
     for (let i = 0; i < phase1.length; i++) {
@@ -52,7 +52,7 @@ startPhase1Button.addEventListener('click', function() {
 });
 
 startPhase2Button.addEventListener('click', function() {
-	Animation.startSPAnimation(); 
+	Animation.startProbeAnimation(); 
 
     for (let i = 0; i < phase0.length; i++) {
         phase0[i].classList.add('fade-out');
@@ -71,6 +71,18 @@ startPhase2Button.addEventListener('click', function() {
         phase2[i].classList.add('fade-in');
     }
     setTimeout(() => startPhase3Button.classList.add('fade-in'), 4000);    
+});
+
+
+startPhase3Button.addEventListener('click', function() {
+	Animation.startSparsifyAnimation(); 
+
+    this.classList.add('fade-out');
+
+    for (let i = 0; i < phase3.length; i++) {
+        phase3[i].classList.add('fade-in');
+    }
+    setTimeout(() => startPhase4Button.classList.add('fade-in'), 4000);    
 });
 
 
