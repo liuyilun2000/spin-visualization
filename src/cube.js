@@ -61,7 +61,7 @@ for (let i = 0; i < Config.dimensions.layer; i++) {
 	cubes[i] = [];
 	cubePositions[i] = [];
 	cubeVelocities[i] = [];
-	const SPCube = createCube(i, Config.dimensions.neuron/2, Config.dimensions.token, 0xaa1234, 0.64);
+	const SPCube = createCube(i, Config.dimensions.neuron/2, Config.dimensions.token, 0xaa1234, 0.0);
 	//scene.add(SPCube);
 	SPCubes[i] = SPCube;
 	const INCube = createCube(i, Config.dimensions.neuron/2, Config.dimensions.token, 0x1234aa, 0.64);

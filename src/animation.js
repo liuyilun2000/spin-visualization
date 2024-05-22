@@ -175,7 +175,7 @@ function getSplinePoints(numPoints, p1, p2){
 	const points = []
 	for (let i = 0; i < numPoints; i++) {
 		let fraction = i / (numPoints - 1.0);
-		const x = p2.x * Utils.easeInOutInf(fraction) + p1.x * (1 - Utils.easeInOutCubic(fraction));
+		const x = p2.x * Utils.easeInOutCubic(fraction) + p1.x * (1 - Utils.easeInOutCubic(fraction));
 		const y = p2.y * fraction + p1.y * (1 - fraction);
 		const z = p2.z * fraction + p1.z * (1 - fraction);
 		if (x!==x){ console.log("X error!")}
@@ -193,48 +193,71 @@ function getSplinePoints(numPoints, p1, p2){
 
 export function startSPAnimation() {
 	for (let i = 0; i < Config.dimensions.layer; i++) {
-		scene.add(Cube.SPCubes[i]);
+        setTimeout(() => {
+			scene.add(Cube.SPCubes[i]);
+            fadeInCube(Cube.SPCubes[i], 400, 0.64);
+        }, i * 20 * Config.dimensions.neuron); 
 	}
 	Cube.maxCubes.forEach((maxCube, index) => {
 		const cube = maxCube.cube;
+		const startPosition = cube.position.clone().add(new THREE.Vector3(0, 0, Config.cubeSize/2.0));
 		const spCube = Cube.SPCubes[maxCube.i];
-		const arr = getSplinePoints(4, cube.position, spCube.position);
-		
+		const endPosition = spCube.position.clone().add(new THREE.Vector3(0, 0, -Config.cubeSize/2.0));
+
+		const arr = getSplinePoints(4, startPosition, endPosition);
 		const curve = new THREE.CatmullRomCurve3(arr);
-
-		// Create a tube geometry along the curve
 		const tubeGeometry = new THREE.TubeGeometry(curve, 16, 0.032, 4, false);
-
-		// Create a material for the tube mesh
 		const material = new THREE.MeshBasicMaterial({ 
 			color: 0xffffff,
 			transparent: true,
 			opacity: 0
 		});
-
-		// Create the mesh and add it to the scene
 		const tubeMesh = new THREE.Mesh(tubeGeometry, material);
-		
-		// Add it to the scene after a delay
+
         setTimeout(() => {
             scene.add(tubeMesh);
-            fadeInMesh(tubeMesh, 200, 0.32);
-        }, index * 20); // Delay each by 0.2 seconds
+            fadeInMesh(tubeMesh, 200, Math.random()*0.5);
+        }, index * 20); 
 	});
 };
 
 
-// Function to gradually increase the opacity of a mesh
 function fadeInMesh(mesh, duration, opacity) {
     const startTime = Date.now();
-    
     function update() {
         const currentTime = Date.now();
         const elapsedTime = currentTime - startTime;
         const fraction = Math.min(elapsedTime / duration, 1); 
-        
         mesh.material.opacity = Utils.easeInOutCubic(fraction) * opacity;
-        
+        if (fraction < 1) {
+            requestAnimationFrame(update);
+        }
+    }    
+    update();
+}
+
+function fadeInCube(cube, duration, opacity) {
+    const startTime = Date.now();
+    function update() {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        const fraction = Math.min(elapsedTime / duration, 1); 
+        cube.material.opacity = Utils.easeInOutCubic(fraction) * opacity;
+        if (fraction < 1) {
+            requestAnimationFrame(update);
+        }
+    }    
+    update();
+}
+
+
+function fadeOutCube(cube, duration, fromOpacity) {
+    const startTime = Date.now();
+    function update() {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        const fraction = Math.min(elapsedTime / duration, 1); 
+        cube.material.fromOpacity = (1 - Utils.easeInOutCubic(fraction)) * fromOpacity;
         if (fraction < 1) {
             requestAnimationFrame(update);
         }

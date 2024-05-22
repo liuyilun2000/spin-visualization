@@ -6,12 +6,12 @@ export const dimensions = {
     token: 6
 };
 
-export const cubeSize = 0.8;
+export const cubeSize = 0.5;
 
 export const spacing = {
     layer: 2,
-    neuron: 1,
-    token: 1.5
+    neuron: 0.8,
+    token: 1
 };
 
 
@@ -31,7 +31,7 @@ export const labels = {
 
 
 export const spriteOffset = {
-    layer: new THREE.Vector3(-1.5, 0.25, -2),
-    neuron: new THREE.Vector3(0, -1, 1.5),
-    token: new THREE.Vector3(-2.25, -1, -0.5)
+    layer: new THREE.Vector3(-1.5*spacing.neuron, 0.25, -1.5*spacing.token),
+    neuron: new THREE.Vector3(0, -0.5*spacing.layer, 0.5*spacing.token),
+    token: new THREE.Vector3(-3*spacing.neuron, -0.5*spacing.layer, -0.25)
 };
