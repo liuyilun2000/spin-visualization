@@ -125,6 +125,18 @@ canvas {
 
 #intro .button-list {
     display: inline-block;
+    display: flex;
+    justify-content: center;
+}
+
+#intro .button-list a {
+    text-decoration: none;
+    display: inline-block;
+    margin: 0 8px;
+}
+
+#intro .button-list object {
+    vertical-align: middle;
 }
 
 #intro object {

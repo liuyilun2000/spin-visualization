@@ -177,7 +177,7 @@ function getSplinePoints(numPoints, p1, p2){
 	for (let i = 0; i < numPoints; i++) {
 		let fraction = i / (numPoints - 1.0);
 		const x = p2.x * Utils.easeInOutCubic(fraction) + p1.x * (1 - Utils.easeInOutCubic(fraction));
-		const y = p2.y * fraction + p1.y * (1 - fraction);
+		const y = p2.y * Utils.easeInOutCubic(fraction) + p1.y * (1 - Utils.easeInOutCubic(fraction));
 		const z = p2.z * fraction + p1.z * (1 - fraction);
 		if (x!==x){ console.log("X error!")}
 		else if (y!==y){ console.log("Y error!")}
@@ -192,19 +192,20 @@ function getSplinePoints(numPoints, p1, p2){
 
 
 
-const weights = []
+const splines = []
 
 export function startProbeAnimation() {
 	for (let i = 0; i < Config.dimensions.layer; i++) {
         setTimeout(() => {
 			scene.add(Cube.SPCubes[i]);
-            fadeInElement(Cube.SPCubes[i], 400, 0.64);
+            fadeElement(Cube.SPCubes[i], 400, 0, 0.64);
         }, i * 20 * Config.dimensions.neuron); 
 	}
 	Cube.maxCubes.forEach((maxCube, index) => {
 		const cube = maxCube.cube;
+		const i = maxCube.i;
 		const startPosition = cube.position.clone().add(new THREE.Vector3(0, 0, Config.cubeSize/2.0));
-		const spCube = Cube.SPCubes[maxCube.i];
+		const spCube = Cube.SPCubes[i];
 		const endPosition = spCube.position.clone().add(new THREE.Vector3(0, 0, -Config.cubeSize/2.0));
 
 		const arr = getSplinePoints(4, startPosition, endPosition);
@@ -217,73 +218,136 @@ export function startProbeAnimation() {
 		});
 		const tubeMesh = new THREE.Mesh(tubeGeometry, material);
 
-		weights[index] = tubeMesh;
+		splines.push({ 
+			cube: cube,
+			spCube: spCube,
+			tubeMesh: tubeMesh, 
+			i: i,
+			startPosition: startPosition,
+			endPosition: endPosition
+		 });
 
         setTimeout(() => {
             scene.add(tubeMesh);
-            fadeInElement(tubeMesh, 200, Math.random()*0.5);
+            fadeElement(tubeMesh, 200, 0, Math.random()*0.5);
         }, index * 20); 
 	});
 };
 
 
 
-function fadeInElement(element, duration, opacity) {
+function fadeElement(element, duration, fromOpacity, toOpacity) {
     const startTime = Date.now();
     function update() {
         const currentTime = Date.now();
         const elapsedTime = currentTime - startTime;
         const fraction = Math.min(elapsedTime / duration, 1); 
-        element.material.opacity = Utils.easeInOutCubic(fraction) * opacity;
+        element.material.opacity = Utils.easeInOutCubic(fraction) * (toOpacity - fromOpacity) + fromOpacity;
         if (fraction < 1) {
             requestAnimationFrame(update);
         }
     }    
-    update();
+    if (fromOpacity != toOpacity) {
+		update();
+	}
 }
 
-
-
-function fadeOutElement(element, duration, fromOpacity) {
-    const startTime = Date.now();
-    function update() {
-        const currentTime = Date.now();
-        const elapsedTime = currentTime - startTime;
-        const fraction = Math.min(elapsedTime / duration, 1); 
-        element.material.opacity = (1 - Utils.easeInOutCubic(fraction)) * fromOpacity;
-        if (fraction < 1) {
-            requestAnimationFrame(update);
-        }
-    }    
-    update();
-}
-
-
-
+const salientSplines = [];
 export function startSparsifyAnimation() {
 	/*
 	for (let i = 0; i < Config.dimensions.layer; i++) {
         setTimeout(() => {
-			fadeOutElement(Cube.SPCubes[i], 400, 0.64);
+			fadeElement(Cube.SPCubes[i], 400, 0.64, 0);
         }, i * 20 * Config.dimensions.neuron); 
 	}*/
-	Cube.maxCubes.forEach((maxCube, index) => {
-		const cube = maxCube.cube;
-		const tubeMesh = weights[index];
-		if (tubeMesh.material.opacity < 0.36) {
+	splines.forEach((spline, index) => {
+		const cube = spline.cube;
+		const tubeMesh = splines[index].tubeMesh;
+		const opacity = tubeMesh.material.opacity;
+		if (opacity < 0.36) {
 			setTimeout(() => {
-				fadeOutElement(cube, 200, cube.material.opacity);
-				fadeOutElement(tubeMesh, 200, tubeMesh.material.opacity);
+				fadeElement(cube, 200, cube.material.opacity, 0);
+				fadeElement(tubeMesh, 200, opacity, 0);
 			}, index * 20); 
 			setTimeout(() => {
 				scene.remove(cube);
 				scene.remove(tubeMesh);
-			}, index * 20 + 200); 
+			}, index * 20 + 100); 
 		}
 		else {
+			salientSplines.push(spline);
+			/*
 			setTimeout(() => {
-				fadeInElement(tubeMesh, 800, 0.64);
+				fadeElement(tubeMesh, 800, opacity, 0.32);
 			}, index * 20); 
+			*/
 		}
 	});
+};
+
+
+function animateSplineMovement(startPoint, endPoint, duration, updateCallback) {
+    const startTime = Date.now();
+    
+    function update() {
+        const currentTime = Date.now();
+        const elapsedTime = currentTime - startTime;
+        const fraction = Math.min(elapsedTime / duration, 1); // Clamp fraction to 1
+        
+        const easedFraction = Utils.easeInOutCubic(fraction);
+        const currentPoint = new THREE.Vector3(
+            startPoint.x + (endPoint.x - startPoint.x) * easedFraction,
+            startPoint.y + (endPoint.y - startPoint.y) * easedFraction,
+            startPoint.z + (endPoint.z - startPoint.z) * easedFraction
+        );
+        
+        updateCallback(currentPoint);
+        
+        if (fraction < 1) {
+            requestAnimationFrame(update);
+        }
+    }    
+    if (startPoint != endPoint) {
+		update();
+	}
+}
+
+
+export function startIntegrateAnimation() {
+	salientSplines.forEach((spline, index) => {
+		fadeElement(spline.tubeMesh, 1000, spline.tubeMesh.material.opacity, 0.12);
+        setTimeout(() => {
+			fadeElement(spline.spCube, 400, 0.64, 0);
+        }, index * 10); 
+	});
+	for (let i = 0; i < Config.dimensions.layer; i++) {
+        setTimeout(() => {
+			salientSplines.forEach(spline => {
+				if (spline.i < i) {
+					fadeElement(spline.tubeMesh, 200, spline.tubeMesh.material.opacity, 0.5 - 0.2 * i / Config.dimensions.layer);
+					const originalEndPosition = spline.endPosition.clone();
+					const newEndPosition = spline.endPosition.clone().add(new THREE.Vector3(0, Config.spacing.layer, 0)); // Move p2 upwards by 50 units
+					spline.endPosition = newEndPosition;
+					animateSplineMovement(originalEndPosition, newEndPosition, 200, (newPosition) => {
+						const newArr = getSplinePoints(4, spline.startPosition, newPosition);
+						const newCurve = new THREE.CatmullRomCurve3(newArr);
+						spline.tubeMesh.geometry.dispose();
+						spline.tubeMesh.geometry = new THREE.TubeGeometry(newCurve, 16, 0.032, 4, false);
+					});
+				}
+				else if (spline.i === i) {
+					fadeElement(spline.tubeMesh, 200, spline.tubeMesh.material.opacity, 0.5 - 0.2 * i / Config.dimensions.layer);
+				}
+			});	
+        }, (i+1) * 1000); 
+        setTimeout(() => {
+			scene.add(Cube.INCubes[i]);
+			fadeElement(Cube.INCubes[i], 200, 0, 0.8);
+        }, (i+1) * 1000); 
+		if (i < Config.dimensions.layer - 1) {
+			setTimeout(() => {
+				fadeElement(Cube.INCubes[i], 500, 0.64, 0.24);
+			}, (i + 1.5) * 1000); 
+		}
+	}
 };

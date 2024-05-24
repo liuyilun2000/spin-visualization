@@ -54,22 +54,22 @@
 				<object type="image/svg+xml" data="https://img.shields.io/badge/GitHub-Code_Repo-blue.svg?logo=github">
 					GitHub Code Repo
 				</object>
-			</a>&nbsp;
+			</a>
 			<a href="https://github.com/liuyilun2000/spin-visualization/" target="_blank">
 				<object type="image/svg+xml" data="https://img.shields.io/badge/GitHub-Web_Demo_Repo-seagreen.svg?logo=github">
 					GitHub Web Demo Repo
 				</object>
-			</a>&nbsp;
+			</a>
 			<a href="https://openreview.net/forum?id=O8r3h6Oo4Q" target="_blank">
 				<object type="image/svg+xml" data="https://img.shields.io/badge/OpenReview-ACL_2024_Findings-8c1b13.svg?logo=openreview">
 					arXiv 2311.15983
 				</object>
-			</a>&nbsp;
+			</a>
 			<a href="https://arxiv.org/abs/2311.15983" target="_blank">
 				<object type="image/svg+xml" data="https://img.shields.io/badge/arXiv-2311.15983-b31b1b.svg?logo=arxiv">
 					arXiv 2311.15983
 				</object>
-			</a>&nbsp;
+			</a>
 		</div>
 	</div>
 	<div class="panel-left roboto-condensed" style="z-index: 10;">
@@ -93,7 +93,7 @@
 		<p><a class="phase phase2 hidden">
 			Linear probing is applied layer-wise for identifying the salient neurons for the targeted task in each layer of the model.
 			<br><br>			
-			Specifically, the magnitude of the learned weights in the L1-regularized (Lasso) logistic regressioncan be interpreted as indicators of the relative importance or contribution of each neuron to the prediction, i.e., saliency.
+			The magnitude of the learned weights in the <i>L</i>1-regularized logistic regressioncan are interpreted as indicators of the relative importance or contribution to the prediction, i.e., saliency, of each neuron. 
 		</a></p>
 		<button id="startPhase3" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
@@ -101,11 +101,26 @@
 	<div class="panel-right roboto-condensed" style="z-index: 7;">
 		<h3><a class="phase phase3 hidden">Salient Neuron Selection</a></h3>
 		<p><a class="phase phase3 hidden">
-			The selection of salient neurons is guided by the sparsification threshold <i>η</i>, which serves as a metric for determining the cumulative contribution of the most significant neurons. We select the largest weights until their cumulative summation reaches <i>η</i>. 
+			The selection of salient neurons is guided by a sparsification threshold <i>η</i>, which serves as a metric for determining the cumulative contribution of the most significant neurons. We select neurons with largest weights, until their cumulative summation reaches <i>η</i>. 
 			<br><br>
 			The internal neurons are then sparsified based on their saliency.
 		</a></p>
 		<button id="startPhase4" class="transit-button material-symbols-outlined hidden">skip_next</button>
+	</div>
+
+	<div class="panel-left roboto-condensed" style="z-index: 6;">
+		<h3><a class="phase phase4 hidden">Salient Neuron Integration</a></h3>
+		<p><a class="phase phase4 hidden">
+			Following the sparsification of internal neurons from each respective layer, we proceed to integrate them as cross-layer multi-grained representations into the classification head.
+		</a></p>
+		<button id="startPhase5" class="transit-button material-symbols-outlined hidden">skip_next</button>
+	</div>
+
+	<div class="panel-right roboto-condensed" style="z-index: 5;">
+		<h3><a class="phase phase5 hidden">Classification Head</a></h3>
+		<p><a class="phase phase5 hidden">
+			For each layer, the integrated neurons from that layer and below are concatenated and feed into the classification head.
+		</a></p>
 	</div>
 
 
