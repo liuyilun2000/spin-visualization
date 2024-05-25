@@ -15,7 +15,7 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap"
 		rel="stylesheet">
-	
+
 	<!-- material symbols -->
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
 
@@ -37,8 +37,12 @@
 </head>
 
 <body>
+	<script type="module" src="src/main.js"></script>
+	<div class="orientation_msg panel-intro roboto-condensed">
+		<h2>Please rotate your device to landscape mode to start the experience.</h2>
+	</div>
 	<div class="gradient-overlay"></div>
-	<div id="intro" class="panel-intro roboto-condensed">
+	<div id="intro" class="content panel-intro roboto-condensed">
 		<button id="startPhase0" class="transit-button material-symbols-outlined">play_arrow</button>
 		<h1>
 			Exploring SPIN<span><img src="assets/favicon/android-chrome-192x192.png"></span>
@@ -56,12 +60,14 @@
 				</object>
 			</a>
 			<a href="https://github.com/liuyilun2000/spin-visualization/" target="_blank">
-				<object type="image/svg+xml" data="https://img.shields.io/badge/GitHub-Web_Demo_Repo-seagreen.svg?logo=github">
+				<object type="image/svg+xml"
+					data="https://img.shields.io/badge/GitHub-Web_Demo_Repo-seagreen.svg?logo=github">
 					GitHub Web Demo Repo
 				</object>
 			</a>
 			<a href="https://openreview.net/forum?id=O8r3h6Oo4Q" target="_blank">
-				<object type="image/svg+xml" data="https://img.shields.io/badge/OpenReview-ACL_2024_Findings-8c1b13.svg?logo=openreview">
+				<object type="image/svg+xml"
+					data="https://img.shields.io/badge/OpenReview-ACL_2024_Findings-8c1b13.svg?logo=openreview">
 					arXiv 2311.15983
 				</object>
 			</a>
@@ -72,59 +78,65 @@
 			</a>
 		</div>
 	</div>
-	<div class="panel-left roboto-condensed" style="z-index: 10;">
+	<div class="content panel-left roboto-condensed" style="z-index: 10;">
 		<h3><a class="phase phase0 hidden">At the beginning...</a></h3>
 		<p><a class="phase phase0 hidden">
-			For each given sentence, we retrieve its neuron activation patterns of FFN neurons at each layer of the transformer model.   
-		</a></p>
+				For each given sentence, we retrieve its neuron activation patterns of FFN neurons at each layer of
+				the transformer model.
+			</a></p>
 		<button id="startPhase1" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
-	<div class="panel-right roboto-condensed" style="z-index: 9;">
+	<div class="content panel-right roboto-condensed" style="z-index: 9;">
 		<h3><a class="phase phase1 hidden">Pooling Operation</a></h3>
 		<p><a class="phase phase1 hidden">
-			A max pooling is then performed across all tokens, yielding each neuron's maximum activation record for the sentence. 
-		</a></p>
+				A max pooling is then performed across all tokens, yielding each neuron's maximum activation record
+				for the sentence.
+			</a></p>
 		<button id="startPhase2" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
-	<div class="panel-left roboto-condensed" style="z-index: 8;">
+	<div class="content panel-left roboto-condensed" style="z-index: 8;">
 		<h3><a class="phase phase2 hidden">Layer-Wise Linear Probes</a></h3>
 		<p><a class="phase phase2 hidden">
-			Linear probing is applied layer-wise for identifying the salient neurons for the targeted task in each layer of the model.
-			<br><br>			
-			The magnitude of the learned weights in the <i>L</i>1-regularized logistic regressioncan are interpreted as indicators of the relative importance or contribution to the prediction, i.e., saliency, of each neuron. 
-		</a></p>
+				Linear probing is applied layer-wise for identifying the salient neurons for the targeted task in
+				each layer of the model.
+				<br><br>
+				The magnitude of the learned weights in the <i>L</i>1-regularized logistic regressioncan are
+				interpreted as indicators of the relative importance or contribution to the prediction, i.e.,
+				saliency, of each neuron.
+			</a></p>
 		<button id="startPhase3" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
-	<div class="panel-right roboto-condensed" style="z-index: 7;">
+	<div class="content panel-right roboto-condensed" style="z-index: 7;">
 		<h3><a class="phase phase3 hidden">Salient Neuron Selection</a></h3>
 		<p><a class="phase phase3 hidden">
-			The selection of salient neurons is guided by a sparsification threshold <i>η</i>, which serves as a metric for determining the cumulative contribution of the most significant neurons. We select neurons with largest weights, until their cumulative summation reaches <i>η</i>. 
-			<br><br>
-			The internal neurons are then sparsified based on their saliency.
-		</a></p>
+				The selection of salient neurons is guided by a sparsification threshold <i>η</i>, which serves as a
+				metric for determining the cumulative contribution of the most significant neurons. We select
+				neurons with largest weights, until their cumulative summation reaches <i>η</i>.
+				<br><br>
+				The internal neurons are then sparsified based on their saliency.
+			</a></p>
 		<button id="startPhase4" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
-	<div class="panel-left roboto-condensed" style="z-index: 6;">
+	<div class="content panel-left roboto-condensed" style="z-index: 6;">
 		<h3><a class="phase phase4 hidden">Salient Neuron Integration</a></h3>
 		<p><a class="phase phase4 hidden">
-			Following the sparsification of internal neurons from each respective layer, we proceed to integrate them as cross-layer multi-grained representations into the classification head.
-		</a></p>
+				Following the sparsification of internal neurons from each respective layer, we proceed to integrate
+				them as cross-layer multi-grained representations into the classification head.
+			</a></p>
 		<button id="startPhase5" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
 
-	<div class="panel-right roboto-condensed" style="z-index: 5;">
+	<div class="content panel-right roboto-condensed" style="z-index: 5;">
 		<h3><a class="phase phase5 hidden">Classification Head</a></h3>
 		<p><a class="phase phase5 hidden">
-			For each layer, the integrated neurons from that layer and below are concatenated and feed into the classification head.
-		</a></p>
+				For each layer, the integrated neurons from that layer and below are concatenated and feed into the
+				classification head.
+			</a></p>
 	</div>
-
-
-	<script type="module" src="src/main.js"></script>
 </body>
 
 </html>

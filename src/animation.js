@@ -2,7 +2,6 @@ import * as THREE from 'three';
 //import { MeshLine, MeshLineMaterial} from 'three.meshline';
 
 import * as Utils from './utils.js';
-import * as Data from './data.js';
 import {scene, composer, controls, updateBloomEffect} from './env.js';
 import * as Cube from './cube.js';
 import * as Sprite from './sprite.js';

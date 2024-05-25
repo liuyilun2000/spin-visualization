@@ -1,3 +1,19 @@
+@media screen and (orientation:portrait) {
+    .content {
+        display: none !important
+    }
+}
+
+@media screen and (orientation:landscape) {
+    .orientation_msg {
+        display: none !important
+    }
+}
+
+.orientation_msg {
+    z-index: 9999
+}
+
 
 
 
@@ -97,7 +113,7 @@ canvas {
     transition: opacity 2s ease;
 }
 
-#intro button {    
+#intro button {
     font-size: 64px;
 }
 
@@ -161,9 +177,10 @@ button {
 }
 
 .phase {
-    background: 
+    background:
         linear-gradient(90deg, transparent, transparent),
-        linear-gradient(90deg, #fff, #fff); /* or any other desired text color */
+        linear-gradient(90deg, #fff, #fff);
+    /* or any other desired text color */
     background-size: 100% 100%, 0 100%;
     background-repeat: no-repeat;
     background-position: 100% 100%, 0 100%;

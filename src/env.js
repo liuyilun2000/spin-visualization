@@ -4,7 +4,7 @@ import { EffectComposer } from 'EffectComposer';
 import { RenderPass } from 'RenderPass';
 import { UnrealBloomPass } from 'UnrealBloomPass';
 
-const frustumSize = 36;
+const frustumSize = 32;
 
 const scene = new THREE.Scene();
 export {scene}
