@@ -99,12 +99,11 @@
 	<div class="content panel-left roboto-condensed" style="z-index: 8;">
 		<h3><a class="phase phase2 hidden">Layer-Wise Linear Probes</a></h3>
 		<p><a class="phase phase2 hidden">
-				Linear probing is applied layer-wise for identifying the salient neurons for the targeted task in
+				Linear probing is applied layer-wise, identifying salient neurons for the targeted task among
 				each layer of the model.
 				<br><br>
-				The magnitude of the learned weights in the <i>L</i>1-regularized logistic regression are
-				interpreted as indicators of the relative contribution to the prediction, i.e.,
-				saliency, of each neuron.
+				The magnitudes of learned <i>L</i>1-regularized logistic regression weights indicate the 
+				relative contribution to the prediction, i.e., saliency, of each neuron.
 			</a></p>
 		<button id="startPhase3" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
@@ -112,11 +111,9 @@
 	<div class="content panel-right roboto-condensed" style="z-index: 7;">
 		<h3><a class="phase phase3 hidden">Salient Neuron Selection</a></h3>
 		<p><a class="phase phase3 hidden">
-				The selection of salient neurons is guided by a sparsification threshold <i>η</i>, which serves as a
-				metric for determining the cumulative contribution of the most significant neurons. We select
-				neurons with largest weights, until their cumulative summation reaches <i>η</i>.
-				<br><br>
-				The internal neurons are then sparsified based on their saliency.
+				The internal neurons are then sparsified based on their saliency. 
+				Guided by a sparsification threshold <i>η</i>, we calculate the cumulative 
+				contribution to have the most significant neurons. 
 			</a></p>
 		<button id="startPhase4" class="transit-button material-symbols-outlined hidden">skip_next</button>
 	</div>
@@ -124,7 +121,7 @@
 	<div class="content panel-left roboto-condensed" style="z-index: 6;">
 		<h3><a class="phase phase4 hidden">Salient Neuron Integration</a></h3>
 		<p><a class="phase phase4 hidden">
-				Following the sparsification of internal neurons from each respective layer, we proceed to integrate
+				For the sparsified internal neurons from each respective layer, we proceed to integrate
 				them as cross-layer multi-grained representations into the classification head.
 			</a></p>
 		<button id="startPhase5" class="transit-button material-symbols-outlined hidden">skip_next</button>
