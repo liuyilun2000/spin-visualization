@@ -11,7 +11,7 @@ For experiment details, pleaase check our [code repository](https://github.com/d
 ### Citation
 We would be delighted if our provided resources has been useful in your research or development! 🥰 If so, please consider citing our paper:
 
-```tex
+```bibtex
 @inproceedings{jiao-etal-2024-spin,
     title = "{SPIN}: Sparsifying and Integrating Internal Neurons in Large Language Models for Text Classification",
     author = {Jiao, Difan  and
